@@ -5,8 +5,7 @@
 -- Counting the distinct customer IDs
 SELECT COUNT(DISTINCT customer_id) AS customers
 FROM subscriptions;
-```
-```
+
 </pre>
 
 
