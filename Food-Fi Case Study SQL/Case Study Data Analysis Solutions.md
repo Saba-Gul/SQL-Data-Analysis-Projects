@@ -8,6 +8,7 @@
     FROM subscriptions;
     ```
  Explanation: This query counts the total number of unique customers who have ever subscribed to Foodie-Fi.
+ 
 ![Image Alt Text](images/1.png)
 
 2. **What is the monthly distribution of trial plan start_date values for our dataset?**
@@ -22,6 +23,7 @@
     GROUP BY DATE_FORMAT(s.start_date, '%Y-%m-01');
     ```
 Explanation: This query calculates the monthly distribution of trial plan start_date values, grouping them by the start of each month.
+
 ![Image Alt Text](images/2.png)
 
 3. **What plan start_date values occur after the year 2020 for our dataset?**
@@ -36,6 +38,7 @@ Explanation: This query calculates the monthly distribution of trial plan start_
     GROUP BY p.plan_name;
     ```
 Explanation: This query shows the breakdown of plan start_date values occurring after the year 2020 for each plan_name.
+
 ![Image Alt Text](images/3.png)
 
 4. **What is the customer count and percentage of customers who have churned?**
@@ -49,6 +52,7 @@ Explanation: This query shows the breakdown of plan start_date values occurring 
     WHERE p.plan_name = 'churn';
     ```
  Explanation: This query calculates the total number and percentage of customers who have churned.
+ 
 ![Image Alt Text](images/4.png)
 
 5. **How many customers have churned straight after their initial free trial?**
@@ -84,6 +88,7 @@ Explanation: This query shows the breakdown of plan start_date values occurring 
 	WHERE  p.plan_name = 'churn' AND DAY(start_date)<=8; # trial period =7 days
    ```
 Explanation: This query calculates the count and percentage of customers who churned immediately after their free trial.
+
 ![Image Alt Text](images/5.png)
 
 6. **What is the number and percentage of customer plans after their initial free trial?**
@@ -98,6 +103,7 @@ Explanation: This query calculates the count and percentage of customers who chu
     GROUP BY plan_name;
     ```
 Explanation: This query calculates the number and percentage of customer plans after their initial free trial.
+
 ![Image Alt Text](images/6.png)   
 
 7. **What is the customer count and percentage breakdown of all 5 plan_name values at 2020-12-31?**
@@ -131,6 +137,7 @@ Explanation:
 - The first CTE (cte_next_date) calculates the next start date for each subscription using the `LEAD` window function. It partitions the data by `customer_id` and orders it by `start_date`. It filters the subscriptions to include only those until December 31, 2020.
 - The second CTE (plans_breakdown) calculates the breakdown of plan subscriptions. It counts the number of distinct customers for each plan_id based on specific conditions related to the next start date.
 - The final query calculates the percentage breakdown of plan subscriptions by dividing the count of customers for each `plan_id` by the total count of distinct customers in the `subscriptions` table. The result is rounded to one decimal place. The GROUP BY clause ensures that each `plan_id` is grouped with its corresponding number of customers, and the result is ordered by `plan_id`.
+  
 ![Image Alt Text](images/7.png)
 
 8. **How many customers have upgraded to an annual plan in 2020?**
@@ -142,6 +149,7 @@ Explanation:
     WHERE p.plan_name = 'pro annual' AND YEAR(s.start_date) = 2020;
     ```
 Explanation: This query counts the number of customers who upgraded to an annual plan in the year 2020.
+
 ![Image Alt Text](images/8.png)
 
 9. **How many days on average does it take for a customer to upgrade to an annual plan?**
@@ -158,6 +166,7 @@ Explanation: This query counts the number of customers who upgraded to an annual
     WHERE p.plan_name = 'pro annual';
     ```
 Explanation: This query calculates the average number of days for customers to upgrade to an annual plan.
+
 - **Alternate Solution:**
   ```sql
 	-- Common Table Expression (CTE) to find the start date of the trial and annual plans for each customer
@@ -180,6 +189,7 @@ Explanation: This query calculates the average number of days for customers to u
 	SELECT AVG(diff) AS average_days_to_upgrade
 	FROM day_period;
     ```
+  
   ![Image Alt Text](images/9.png)
   
 10. **Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60
@@ -220,10 +230,10 @@ Explanation:
     - **day_period CTE**: After obtaining the start dates of trial and annual plans for each customer, this CTE calculates the difference in days between the start dates of the annual plan and the trial plan. It 
             filters out any records where either the trial_date or the annual_date is NULL.
     - **bins CTE**: This CTE bins the differences in days obtained from the `day_period` CTE into 30-day periods. It uses the `FLOOR` function to divide the differences by 30, thus assigning each difference to a 
-           specific bin.
-	
-	Finally, the main query selects the bins, concatenates the 30-day periods, counts the number of customers in each bin, and groups the results by the bin. This provides insight into how many customers upgraded 
-        from trial to annual plans within specific 30-day periods.
+           specific bin.	
+Finally, the main query selects the bins, concatenates the 30-day periods, counts the number of customers in each bin, and groups the results by the bin. This provides insight into how many customers upgraded 
+from trial to annual plans within specific 30-day periods.
+
 ![Image Alt Text](images/10.png)
     
   11. **How many customers downgraded from a pro monthly to a basic monthly plan in 2020?**
@@ -268,4 +278,5 @@ Explanation:  This SQL query counts customers who switched from a 'pro monthly' 
 		WHERE p.plan_name = 'pro monthly' AND np.plan = 1 AND start_date <= '2020-12-31';
 	   ```
  Explanation: This SQL query counts the number of customers who downgraded from a 'pro monthly' plan to another plan in the dataset up to December 31, 2020. It does so by using a window function to identify the next plan for each customer based on the start date and plan ID. Then, it joins this data with the `plans` table to filter for 'pro monthly' plans that were followed by a different plan. Finally, it counts the distinct customer IDs meeting these criteria.
- ![Image Alt Text](images/11.png)
+ 
+![Image Alt Text](images/11.png)
